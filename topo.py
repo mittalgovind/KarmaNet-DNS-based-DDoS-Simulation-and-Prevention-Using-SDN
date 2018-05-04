@@ -12,7 +12,9 @@ from subprocess import call
 from random import randint
 import pdb
 import time
+import sys
 
+bw = 0.5
 def myNetwork():
 
     net = Mininet( topo=None,
@@ -47,21 +49,21 @@ def myNetwork():
     info( '*** Add links\n')
     # pdb.set_trace()
 
-    net.addLink(h1, s1, cls=TCLink, **{'bw':2})
-    net.addLink(s2, h2, cls=TCLink, **{'bw':2})
-    net.addLink(adversary, s6, cls=TCLink, **{'bw':2})
-    net.addLink(s4, h4, cls=TCLink, **{'bw':2})
-    net.addLink(h5, s5, cls=TCLink, **{'bw':2})
-    net.addLink(dns, s7, cls=TCLink, **{'bw':2})
-    net.addLink(s3, h3, cls=TCLink, **{'bw':2})
-    # net.addLink(s7, trap, cls=TCLink, **{'bw':20})
+    net.addLink(h1, s1, cls=TCLink, **{'bw':bw})
+    net.addLink(s2, h2, cls=TCLink, **{'bw':bw})
+    net.addLink(adversary, s6, cls=TCLink, **{'bw':bw})
+    net.addLink(s4, h4, cls=TCLink, **{'bw':bw})
+    net.addLink(h5, s5, cls=TCLink, **{'bw':bw})
+    net.addLink(dns, s7, cls=TCLink, **{'bw':bw})
+    net.addLink(s3, h3, cls=TCLink, **{'bw':bw})
+    # net.addLink(s7, trap, cls=TCLink, **{'bw':bw0})
     
-    net.addLink(s1, s2, cls=TCLink, **{'bw':2})
-    net.addLink(s2, s3, cls=TCLink, **{'bw':2})
-    net.addLink(s3, s7, cls=TCLink, **{'bw':2})
-    net.addLink(s6, s7, cls=TCLink, **{'bw':2})
-    net.addLink(s6, s4, cls=TCLink, **{'bw':2})
-    net.addLink(s6, s5, cls=TCLink, **{'bw':2})
+    net.addLink(s1, s2, cls=TCLink, **{'bw':bw})
+    net.addLink(s2, s3, cls=TCLink, **{'bw':bw})
+    net.addLink(s3, s7, cls=TCLink, **{'bw':bw})
+    net.addLink(s6, s7, cls=TCLink, **{'bw':bw})
+    net.addLink(s6, s4, cls=TCLink, **{'bw':bw})
+    net.addLink(s6, s5, cls=TCLink, **{'bw':bw})
 
     info( '*** Starting network\n')
     net.build()
@@ -79,19 +81,22 @@ def myNetwork():
     net.get('s2').start([c0])
 
     info( '*** Post configure switches and hosts\n')
-    # pdb.set_trace()
-
-    dns.sendCmd('python dns.py > dnsOut_Adversary_with_sec.txt')
+    # CLI(net)
+    time_to_run = int(sys.argv[1], 10)
+    dns.sendCmd('python dns.py > dns_'
+            +str(bw)+'_'+ str(time_to_run))
     adversary.sendCmd('python adversary.py')
     client = [h1, h2, h3, h4, h5]
     i = 1
     for c in client:
-        c.sendCmd('python client.py > h'+str(i)+'Out_Adversary_with_sec.txt')
+        # pdb.set_trace()
+        c.sendCmd('python client.py '+str(i))
         i += 1
+    time.sleep(time_to_run)
+    # net.stop()
 
-    time.sleep(40)
-    CLI(net)
-    net.stop()
+    for c in client:
+        c.sendCmd('exit')
 
 if __name__ == '__main__':
     setLogLevel( 'info' )
