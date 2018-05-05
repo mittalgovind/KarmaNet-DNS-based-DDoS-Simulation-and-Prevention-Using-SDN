@@ -89,16 +89,11 @@ def myNetwork():
     client = [h1, h2, h3, h4, h5]
     i = 1
     for c in client:
-        # pdb.set_trace()
         c.sendCmd('python client.py '+str(i))
         i += 1
     time.sleep(time_to_run)
     # net.stop()
 
-    for c in client:
-        c.sendCmd('exit')
-
 if __name__ == '__main__':
     setLogLevel( 'info' )
     myNetwork()
-
