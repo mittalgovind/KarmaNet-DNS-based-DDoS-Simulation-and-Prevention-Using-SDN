@@ -101,7 +101,7 @@ class SimpleSwitch13(app_manager.RyuApp):
         match = parser.OFPMatch()
         actions = [parser.OFPActionOutput(ofproto.OFPP_CONTROLLER,
                                           ofproto.OFPCML_NO_BUFFER)]
-        self.add_flow(datapath, 0, match, actions)
+        self.add_flow(datapath, 0, match, actions, hard_timeout=5)
 
     def add_flow(self, datapath, priority, match, actions, buffer_id=None, idle_timeout=0,
                 hard_timeout=0):
@@ -172,14 +172,18 @@ class SimpleSwitch13(app_manager.RyuApp):
                 else:
                     if eth_src == '00:00:00:00:01:00' and self.reply_path_ip.has_key(dpid):
                         if self.reply_path_mac[dpid].has_key(eth_dst):
-                            match_rp = parser.OFPMatch(in_port=self.reply_path_ip[dpid][ip_dst], eth_dst=eth_dst,
-                                        eth_type=0x0800, ip_proto=17, ipv4_src='10.0.0.100', ipv4_dst=ip_dst
+                            match_rp = parser.OFPMatch(in_port=in_port, eth_dst=eth_dst,
+                                        eth_type=0x0800
+                                        # ip_proto=17,
+                                        #  ipv4_src='10.0.0.100', 
+                                        #  ipv4_dst=ip_dst
                                         ) 
+                            # 
                             out_port_rp = self.reply_path_ip[dpid][ip_dst]
                             actions = [parser.OFPActionOutput(out_port_rp)] 
                             self.add_flow(datapath=datapath, priority=10, match=match_rp, actions=actions)
                         else: 
-                            match_trap = parser.OFPMatch(in_port=in_port, eth_type=0x0800, ip_proto=17, ipv4_dst='10.0.0.100')
+                            match_trap = parser.OFPMatch(in_port=in_port, eth_dst=eth_dst)
                             trap_port = 0
                             actions = [parser.OFPActionOutput(trap_port)] 
                             self.add_flow(datapath=datapath, priority=1000, match=match_trap, actions=actions)
