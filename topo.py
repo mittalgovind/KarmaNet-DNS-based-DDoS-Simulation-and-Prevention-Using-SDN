@@ -14,7 +14,7 @@ import pdb
 import time
 import sys
 
-bw = 0.5
+bw = float(sys.argv[2])
 def myNetwork():
 
     net = Mininet( topo=None,
@@ -81,17 +81,17 @@ def myNetwork():
     net.get('s2').start([c0])
 
     info( '*** Post configure switches and hosts\n')
-    # CLI(net)
     time_to_run = int(sys.argv[1], 10)
-    dns.sendCmd('python dns.py > dns_'
+    dns.sendCmd('python dns_raw.py > dns_'
             +str(bw)+'_'+ str(time_to_run))
-    adversary.sendCmd('python adversary.py')
-    client = [h1, h2, h3, h4, h5]
+    adversary.sendCmd('python adversary.py ' + sys.argv[3])
+    client = [h1, h2, h3, h4, h5] 
     i = 1
     for c in client:
-        c.sendCmd('python client.py '+str(i))
+        c.sendCmd('python client_raw.py '+str(i))
         i += 1
     time.sleep(time_to_run)
+    # CLI(net)
     # net.stop()
 
 if __name__ == '__main__':
