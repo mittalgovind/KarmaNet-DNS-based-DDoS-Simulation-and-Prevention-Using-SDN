@@ -1,4 +1,4 @@
-# DNS-based-DDoS-Simulation-and-Prevention
+# KarmaNet: DNS-based-DDoS Simulation-and-Containment using SDN
 DNS-based DDoS attack simulation and solution using SDN flow monitoring
 
 This repository is created to support the publication at this link.
@@ -10,7 +10,7 @@ This repository uses many simple tools to:
 
 All files in the repository are commented wherever necessary.
 
-Description of Files:
+_Description of Files:_
   1.  **dns.py:** Contains the script to run the Domain Name Server at 10.0.0.100:53
   2.  **client.py:** Contains the script to run the client nodes
   3.  **adversary.py:** Contains the script to run the adversary at a node and start the DDoS.
