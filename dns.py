@@ -1,27 +1,26 @@
 import socket               
 from random import randint
 # next create a socket object
-import pdb
 from impacket import ImpactPacket
-# from ImpactPacket import * 
 from array import array
 
 serverSocket = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.IPPROTO_UDP)         
 port = 53
 
-# Next bind to the port
+# Next bind to the port - this is a physical port
 serverSocket.bind(('dns-eth0', 0x0800))       
 eth = ImpactPacket.Ethernet()
+# source mac = 00:00:00:00:01:00 -- check topo.py
 eth.set_ether_shost(array('B', '\x00\x00\x00\x00\x01\x00'))
+# ether type = ethernet frame will carry IP packet
 eth.set_ether_type(0x0800)
 ip = ImpactPacket.IP()
 ip.set_ip_src('10.0.0.100')
 udp = ImpactPacket.UDP()
 udp.set_uh_sport(53)
-# an error occurs
+
 while True:
 	frame = serverSocket.recv(2048)
-	
 	reply = randint(1000, 2000) * 'A'
 	udp.contains(ImpactPacket.Data(reply))
 
